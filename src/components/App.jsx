@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Searchbar from './Searchbar';
 import fetchData from 'services/fetchData';
 import ImageGallery from './ImageGallery';
+import css from './App.module.css';
 
 class App extends Component {
   state = {
@@ -17,9 +18,16 @@ class App extends Component {
     isEmpty: false,
   };
 
-  addSerachQuery = query => {
-    this.setState({ searchQuery: query });
-  };
+  componentDidUpdate(prevProps, prevState) {
+    const prevQuery = prevState.searchQuery;
+    const newQuery = this.state.searchQuery;
+    const prevPage = prevState.page;
+    const newPage = this.state.page;
+
+    if (prevQuery !== newQuery || prevPage !== newPage) {
+      this.handleGetImages(newQuery, newPage);
+    }
+  }
 
   handleGetImages(searchQuery, page) {
     this.setState({ isLoading: true });
@@ -43,35 +51,6 @@ class App extends Component {
       .finally(() => this.setState({ isLoading: false }));
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const prevQuery = prevState.searchQuery;
-    const newQuery = this.state.searchQuery;
-    const prevPage = prevState.page;
-    const newPage = this.state.page;
-
-    if (prevQuery !== newQuery || prevPage !== newPage) {
-      this.handleGetImages(newQuery, newPage);
-    }
-  }
-
-  openModal = url => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-      urlModal: url,
-    }));
-  };
-
-  closeModal = () => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-      urlModal: url,
-    }));
-
-    toggleOnLoading = () => {
-      this.setState(({ isLoading }) => ({ isLoading: !isLoading }));
-    };
-  };
-
   handleFormSubmit = query => {
     this.setState({
       searchQuery: query,
@@ -84,15 +63,61 @@ class App extends Component {
     });
   };
 
+  openModal = url => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+      urlModal: url,
+    }));
+  };
+
+  closeModal = () => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+      urlModal: '',
+    }));
+  };
+
+  toggleOnLoading = () => {
+    this.setState(({ isLoading }) => ({ isLoading: !isLoading }));
+  };
+
   onLoadMore = () => {
     this.setState(({ page }) => ({ page: page + 1 }));
   };
 
+  toggleOnLoading = () => {
+    this.setState(({ isLoading }) => ({ isLoading: !isLoading }));
+  };
+
   render() {
+    const {
+      searchQuery,
+      images,
+      showModal,
+      urlModal,
+      isLoading,
+      error,
+      showLoadMore,
+      isEmpty,
+    } = this.state;
+
     return (
-      <div>
-        <Searchbar onSubmit={this.handleFormSubmity} />
-        <ImageGallery />
+      <div className={css.app}>
+        <Searchbar onSubmit={this.handleFormSubmit} />
+
+        {error && <h2 className={css.errorMsg}>{error}</h2>}
+
+        {isEmpty && (
+          <h2 className={css.errorMsg}>
+            Sorry, we don`t have image by this query {searchQuery}
+          </h2>
+        )}
+
+        <ImageGallery
+          images={images}
+          openModal={this.openModal}
+          toggleOnLoading={this.toggleOnLoading}
+        />
       </div>
     );
   }

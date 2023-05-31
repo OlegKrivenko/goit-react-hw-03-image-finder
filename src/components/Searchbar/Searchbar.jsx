@@ -18,13 +18,13 @@ class Searchbar extends Component {
   handleSubmit = event => {
     event.preventDefault();
 
-    const searchValue = this.state.searchQuery;
+    const searchQuery = this.state.searchQuery;
 
-    if (searchValue === '') {
+    if (searchQuery === '') {
       Notify.warning('Please enter your search query!');
       return;
     }
-    this.props.onSubmit(searchValue);
+    this.props.onSubmit(searchQuery);
   };
 
   render() {

@@ -4,6 +4,8 @@ import Searchbar from './Searchbar';
 import fetchData from 'services/fetchData';
 import ImageGallery from './ImageGallery';
 import css from './App.module.css';
+import Button from './Button';
+import Loader from './Loader';
 
 class App extends Component {
   state = {
@@ -30,7 +32,7 @@ class App extends Component {
   }
 
   handleGetImages(searchQuery, page) {
-    this.setState({ isLoading: true });
+    this.setState({ isLoading: true, showLoadMore: false });
 
     fetchData(searchQuery, page)
       .then(({ hits, totalHits }) => {
@@ -48,7 +50,7 @@ class App extends Component {
       .catch(error => {
         this.setState({ error: `${error}` });
       })
-      .finally(() => this.setState({ isLoading: false }));
+      .finally(() => this.setState({ isLoading: false, showLoadMore: true }));
   }
 
   handleFormSubmit = query => {
@@ -57,7 +59,7 @@ class App extends Component {
       images: [],
       page: 1,
       showLoadMore: false,
-      status: 'loading',
+      // status: 'loading',
       isEmpty: false,
       error: '',
     });
@@ -75,10 +77,6 @@ class App extends Component {
       showModal: !showModal,
       urlModal: '',
     }));
-  };
-
-  toggleOnLoading = () => {
-    this.setState(({ isLoading }) => ({ isLoading: !isLoading }));
   };
 
   onLoadMore = () => {
@@ -105,11 +103,11 @@ class App extends Component {
       <div className={css.app}>
         <Searchbar onSubmit={this.handleFormSubmit} />
 
-        {error && <h2 className={css.errorMsg}>{error}</h2>}
+        {error && <h2 className={css.error}>{error}</h2>}
 
         {isEmpty && (
-          <h2 className={css.errorMsg}>
-            Sorry, we don`t have image by this query {searchQuery}
+          <h2 className={css.error}>
+            Sorry, we don`t have image by this query: {searchQuery}
           </h2>
         )}
 
@@ -118,6 +116,10 @@ class App extends Component {
           openModal={this.openModal}
           toggleOnLoading={this.toggleOnLoading}
         />
+
+        {showLoadMore && <Button onLoadMore={this.onLoadMore} />}
+
+        {isLoading && <Loader />}
       </div>
     );
   }

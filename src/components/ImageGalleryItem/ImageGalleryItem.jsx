@@ -1,13 +1,7 @@
 import PropTypes from 'prop-types';
 import css from './ImageGalleryItem.module.css';
 
-const ImageGalleryItem = ({
-  webformatURL,
-  largeImageURL,
-  tags,
-  openModal,
-  toggleOnLoading,
-}) => {
+const ImageGalleryItem = ({ webformatURL, largeImageURL, tags, openModal }) => {
   return (
     <li className={css.item}>
       <img
@@ -17,7 +11,6 @@ const ImageGalleryItem = ({
         alt={tags}
         onClick={event => {
           openModal(event.target.dataset.large);
-          toggleOnLoading();
         }}
       />
     </li>
@@ -31,5 +24,4 @@ ImageGalleryItem.propTypes = {
   largeImageURL: PropTypes.string.isRequired,
   tags: PropTypes.string.isRequired,
   openModal: PropTypes.func.isRequired,
-  toggleOnLoading: PropTypes.func.isRequired,
 };

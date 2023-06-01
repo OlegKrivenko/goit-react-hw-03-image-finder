@@ -5,10 +5,16 @@
    padding-bottom: 24px;
 }
 
-.error{
+.error {
    display: flex;
    justify-content: center;
    margin-top: 100px;
    text-align: center;
    color: rgb(71, 27, 193);
+}
+
+.modalImg {
+   width: 100%;
+   height: auto;
+   object-fit: cover;
 }

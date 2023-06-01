@@ -3,9 +3,11 @@ import React, { Component } from 'react';
 import Searchbar from './Searchbar';
 import fetchData from 'services/fetchData';
 import ImageGallery from './ImageGallery';
-import css from './App.module.css';
 import Button from './Button';
 import Loader from './Loader';
+import Modal from './Modal';
+
+import css from './App.module.css';
 
 class App extends Component {
   state = {
@@ -13,7 +15,7 @@ class App extends Component {
     images: [],
     page: 1,
     showModal: false,
-    urlModal: '',
+    largeImageURL: '',
     isLoading: false,
     error: '',
     showLoadMore: false,
@@ -50,7 +52,7 @@ class App extends Component {
       .catch(error => {
         this.setState({ error: `${error}` });
       })
-      .finally(() => this.setState({ isLoading: false, showLoadMore: true }));
+      .finally(() => this.setState({ isLoading: false }));
   }
 
   handleFormSubmit = query => {
@@ -65,17 +67,17 @@ class App extends Component {
     });
   };
 
-  openModal = url => {
+  openModal = largeImageURL => {
     this.setState(({ showModal }) => ({
       showModal: !showModal,
-      urlModal: url,
+      largeImageURL: largeImageURL,
     }));
   };
 
   closeModal = () => {
     this.setState(({ showModal }) => ({
       showModal: !showModal,
-      urlModal: '',
+      largeImageURL: '',
     }));
   };
 
@@ -92,7 +94,7 @@ class App extends Component {
       searchQuery,
       images,
       showModal,
-      urlModal,
+      largeImageURL,
       isLoading,
       error,
       showLoadMore,
@@ -120,6 +122,10 @@ class App extends Component {
         {showLoadMore && <Button onLoadMore={this.onLoadMore} />}
 
         {isLoading && <Loader />}
+
+        {showModal && (
+          <Modal closeModal={this.closeModal} largeImageURL={largeImageURL} />
+        )}
       </div>
     );
   }

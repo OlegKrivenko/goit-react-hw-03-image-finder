@@ -15,6 +15,8 @@ const fetchData = async (searchQuery, page) => {
     },
   });
 
+  // console.log(response);
+  // console.log(response.data);
   return response.data;
 };
 
